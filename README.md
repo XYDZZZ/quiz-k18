@@ -56,13 +56,30 @@ Klik "Publish"
 
 ---
 
-## ⚙️ STEP 3 — Konfigurasi Firebase di Website
+## ⚙️ STEP 3 — Konfigurasi Firebase Credentials
 
-1. Buka URL Vercel di browser
-2. Halaman pertama = form Firebase config
-3. Isi semua kolom dari firebaseConfig yang sudah di-copy
-4. Klik "Simpan & Lanjutkan"
-5. Config tersimpan di browser, tidak perlu isi ulang
+### Setup Local Development
+1. Copy file template: `cp config.example.js config.js`
+2. Buka `config.js` dan isi dengan Firebase credentials Anda:
+   ```js
+   export const FIREBASE_CONFIG = {
+     apiKey:            "YOUR_API_KEY_HERE",
+     authDomain:        "YOUR_AUTH_DOMAIN_HERE",
+     databaseURL:       "YOUR_DATABASE_URL_HERE",
+     projectId:         "YOUR_PROJECT_ID_HERE",
+     storageBucket:     "YOUR_STORAGE_BUCKET_HERE",
+     messagingSenderId: "YOUR_MESSAGING_SENDER_ID_HERE",
+     appId:             "YOUR_APP_ID_HERE",
+   };
+   ```
+3. File `config.js` **tidak akan di-track** karena ada di `.gitignore` ✓
+
+### Setup di Vercel
+1. Buka dashboard Vercel → pilih project quiz-k18
+2. Settings → Environment Variables
+3. Tambah variable baru dengan nama: `FIREBASE_CONFIG`
+4. Isi value dengan JSON credentials Anda
+5. Redeploy
 
 ---
 
