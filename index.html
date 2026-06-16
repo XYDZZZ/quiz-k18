@@ -1,815 +1,1912 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>Quiz Game — Kelompok 18</title>
-<style>
-/* ── RESET & TOKENS ─────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:      #0f1117;
-  --surface: #1a1d27;
-  --card:    #22263a;
-  --border:  #2e3450;
-  --accent:  #6c63ff;
-  --accent2: #ff6584;
-  --gold:    #ffd700;
-  --green:   #22c55e;
-  --red:     #ef4444;
-  --text:    #f0f1ff;
-  --muted:   #8b92b8;
-  --radius:  14px;
-  --font:    'Segoe UI', system-ui, sans-serif;
-}
-html, body { height: 100%; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>Quiz Game — Kelompok 18</title>
+    <style>
+      /* ── RESET & TOKENS ─────────────────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --bg: #0f1117;
+        --surface: #1a1d27;
+        --card: #22263a;
+        --border: #2e3450;
+        --accent: #6c63ff;
+        --accent2: #ff6584;
+        --gold: #ffd700;
+        --green: #22c55e;
+        --red: #ef4444;
+        --text: #f0f1ff;
+        --muted: #8b92b8;
+        --radius: 14px;
+        --font: "Segoe UI", system-ui, sans-serif;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
 
-/* ── SCREENS ────────────────────────────────────────────────────────── */
-.screen { display: none; min-height: 100vh; padding: 1.2rem; }
-.screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+      /* ── SCREENS ────────────────────────────────────────────────────────── */
+      .screen {
+        display: none;
+        min-height: 100vh;
+        padding: 1.2rem;
+      }
+      .screen.active {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
 
-/* ── TYPOGRAPHY ─────────────────────────────────────────────────────── */
-.logo { font-size: clamp(1.5rem,5vw,2.2rem); font-weight: 800; letter-spacing:-.03em; text-align:center; margin-bottom:.2rem; }
-.logo span { color: var(--accent); }
-.sub { color: var(--muted); font-size:.85rem; text-align:center; margin-bottom:2rem; }
+      /* ── TYPOGRAPHY ─────────────────────────────────────────────────────── */
+      .logo {
+        font-size: clamp(1.5rem, 5vw, 2.2rem);
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        text-align: center;
+        margin-bottom: 0.2rem;
+      }
+      .logo span {
+        color: var(--accent);
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 0.85rem;
+        text-align: center;
+        margin-bottom: 2rem;
+      }
 
-/* ── CARD ───────────────────────────────────────────────────────────── */
-.card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.75rem; width:100%; max-width:420px; }
+      /* ── CARD ───────────────────────────────────────────────────────────── */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+        width: 100%;
+        max-width: 420px;
+      }
 
-/* ── FORM ───────────────────────────────────────────────────────────── */
-label { display:block; font-size:.74rem; color:var(--muted); margin-bottom:.35rem; margin-top:.9rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
-label:first-child { margin-top:0; }
-input, select { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:.65rem .9rem; color:var(--text); font-size:.95rem; font-family:var(--font); outline:none; transition:border-color .2s; }
-input:focus, select:focus { border-color:var(--accent); }
-select option { background:var(--surface); }
+      /* ── FORM ───────────────────────────────────────────────────────────── */
+      label {
+        display: block;
+        font-size: 0.74rem;
+        color: var(--muted);
+        margin-bottom: 0.35rem;
+        margin-top: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      label:first-child {
+        margin-top: 0;
+      }
+      input,
+      select {
+        width: 100%;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.65rem 0.9rem;
+        color: var(--text);
+        font-size: 0.95rem;
+        font-family: var(--font);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      input:focus,
+      select:focus {
+        border-color: var(--accent);
+      }
+      select option {
+        background: var(--surface);
+      }
 
-/* ── SETUP FIELDS ───────────────────────────────────────────────────── */
-.setup-row { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-top:.9rem; }
-.setup-note { font-size:.75rem; color:var(--muted); margin-top:.5rem; line-height:1.5; }
-.setup-note a { color:var(--accent); text-decoration:none; }
+      /* ── SETUP FIELDS ───────────────────────────────────────────────────── */
+      .setup-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-top: 0.9rem;
+      }
+      .setup-note {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 0.5rem;
+        line-height: 1.5;
+      }
+      .setup-note a {
+        color: var(--accent);
+        text-decoration: none;
+      }
 
-/* ── BUTTONS ────────────────────────────────────────────────────────── */
-.btn { display:inline-flex; align-items:center; justify-content:center; gap:.45rem; border:none; cursor:pointer; border-radius:10px; font-family:var(--font); font-weight:700; font-size:.95rem; transition:transform .12s,opacity .15s,box-shadow .15s; padding:.7rem 1.4rem; }
-.btn:active { transform:scale(.96); }
-.btn:disabled { opacity:.4; cursor:not-allowed; }
-.btn-primary { background:var(--accent); color:#fff; width:100%; margin-top:1.25rem; padding:.85rem; box-shadow:0 4px 20px rgba(108,99,255,.35); }
-.btn-primary:hover:not(:disabled) { box-shadow:0 6px 28px rgba(108,99,255,.5); }
-.btn-sm { padding:.45rem .9rem; font-size:.8rem; border-radius:8px; }
-.btn-danger  { background:var(--red);   color:#fff; }
-.btn-success { background:var(--green); color:#fff; }
-.btn-gold    { background:var(--gold);  color:#111; }
-.btn-warn    { background:#f59e0b;      color:#111; }
-.btn-outline { background:transparent; color:var(--muted); border:1px solid var(--border); }
-.btn-back    { width:100%; margin-top:.65rem; background:transparent; color:var(--muted); border:1px solid var(--border); border-radius:10px; }
+      /* ── BUTTONS ────────────────────────────────────────────────────────── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        border: none;
+        cursor: pointer;
+        border-radius: 10px;
+        font-family: var(--font);
+        font-weight: 700;
+        font-size: 0.95rem;
+        transition:
+          transform 0.12s,
+          opacity 0.15s,
+          box-shadow 0.15s;
+        padding: 0.7rem 1.4rem;
+      }
+      .btn:active {
+        transform: scale(0.96);
+      }
+      .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        width: 100%;
+        margin-top: 1.25rem;
+        padding: 0.85rem;
+        box-shadow: 0 4px 20px rgba(108, 99, 255, 0.35);
+      }
+      .btn-primary:hover:not(:disabled) {
+        box-shadow: 0 6px 28px rgba(108, 99, 255, 0.5);
+      }
+      .btn-sm {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.8rem;
+        border-radius: 8px;
+      }
+      .btn-danger {
+        background: var(--red);
+        color: #fff;
+      }
+      .btn-success {
+        background: var(--green);
+        color: #fff;
+      }
+      .btn-gold {
+        background: var(--gold);
+        color: #111;
+      }
+      .btn-warn {
+        background: #f59e0b;
+        color: #111;
+      }
+      .btn-outline {
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .btn-back {
+        width: 100%;
+        margin-top: 0.65rem;
+        background: transparent;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
 
-/* ── ANSWER GRID (HP mahasiswa) ─────────────────────────────────────── */
-.answer-grid { display:grid; grid-template-columns:1fr 1fr; gap:.9rem; width:100%; max-width:360px; padding:.25rem; }
-.answer-btn {
-  aspect-ratio:1/1; font-size:clamp(1.6rem,9vw,2.8rem); font-weight:900;
-  border:none; border-radius:18px; cursor:pointer;
-  transition:transform .12s,filter .15s; color:#fff;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.25rem; line-height:1;
-}
-.answer-btn .lbl { font-size:clamp(.6rem,2.5vw,.75rem); font-weight:600; opacity:.85; letter-spacing:.04em; }
-.answer-btn:active { transform:scale(.9); }
-.answer-btn:disabled { opacity:.45; cursor:not-allowed; filter:saturate(.2) brightness(.7); }
-.opt-A { background:linear-gradient(135deg,#e74c3c,#c0392b); }
-.opt-B { background:linear-gradient(135deg,#3498db,#1a7bc4); }
-.opt-C { background:linear-gradient(135deg,#f39c12,#d68910); }
-.opt-D { background:linear-gradient(135deg,#27ae60,#1e8449); }
+      /* ── ANSWER GRID (HP mahasiswa) ─────────────────────────────────────── */
+      .answer-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.9rem;
+        width: 100%;
+        max-width: 360px;
+        padding: 0.25rem;
+      }
+      .answer-btn {
+        aspect-ratio: 1/1;
+        font-size: clamp(1.6rem, 9vw, 2.8rem);
+        font-weight: 900;
+        border: none;
+        border-radius: 18px;
+        cursor: pointer;
+        transition:
+          transform 0.12s,
+          filter 0.15s;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        line-height: 1;
+      }
+      .answer-btn .lbl {
+        font-size: clamp(0.6rem, 2.5vw, 0.75rem);
+        font-weight: 600;
+        opacity: 0.85;
+        letter-spacing: 0.04em;
+      }
+      .answer-btn:active {
+        transform: scale(0.9);
+      }
+      .answer-btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+        filter: saturate(0.2) brightness(0.7);
+      }
+      .opt-A {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+      }
+      .opt-B {
+        background: linear-gradient(135deg, #3498db, #1a7bc4);
+      }
+      .opt-C {
+        background: linear-gradient(135deg, #f39c12, #d68910);
+      }
+      .opt-D {
+        background: linear-gradient(135deg, #27ae60, #1e8449);
+      }
 
-/* ── ADMIN SCREEN ───────────────────────────────────────────────────── */
-#admin-screen { padding:1rem 1.25rem; align-items:stretch; justify-content:flex-start; }
-.admin-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:.85rem; gap:.75rem; flex-wrap:wrap; }
-.admin-header .logo { margin:0; font-size:1.15rem; }
-.admin-controls { display:flex; gap:.4rem; flex-wrap:wrap; align-items:center; }
-.admin-body { flex:1; overflow-y:auto; width:100%; }
+      /* ── ADMIN SCREEN ───────────────────────────────────────────────────── */
+      #admin-screen {
+        padding: 1rem 1.25rem;
+        align-items: stretch;
+        justify-content: flex-start;
+      }
+      .admin-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.85rem;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .admin-header .logo {
+        margin: 0;
+        font-size: 1.15rem;
+      }
+      .admin-controls {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .admin-body {
+        flex: 1;
+        overflow-y: auto;
+        width: 100%;
+      }
 
-/* ── QUESTION BOX ───────────────────────────────────────────────────── */
-.question-box { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem 1.5rem; margin-bottom:.85rem; }
-.q-category { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); margin-bottom:.4rem; }
-.q-number   { font-size:.82rem; color:var(--muted); margin-bottom:.5rem; }
-.q-text     { font-size:clamp(.95rem,2.2vw,1.2rem); font-weight:600; line-height:1.6; white-space:pre-line; }
-.options-display { display:grid; grid-template-columns:1fr 1fr; gap:.55rem; margin-top:1.1rem; }
-.opt-chip { padding:.55rem .9rem; border-radius:8px; font-size:.88rem; display:flex; align-items:center; gap:.5rem; border:2px solid transparent; background:var(--surface); }
-.opt-chip .letter { width:26px; height:26px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.82rem; flex-shrink:0; color:#fff; }
-.opt-chip.A .letter { background:#e74c3c; }
-.opt-chip.B .letter { background:#3498db; }
-.opt-chip.C .letter { background:#f39c12; }
-.opt-chip.D .letter { background:#27ae60; }
-.opt-chip.correct-opt { border-color:var(--green); background:rgba(34,197,94,.1); }
+      /* ── QUESTION BOX ───────────────────────────────────────────────────── */
+      .question-box {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 0.85rem;
+      }
+      .q-category {
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+      }
+      .q-number {
+        font-size: 0.82rem;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+      }
+      .q-text {
+        font-size: clamp(0.95rem, 2.2vw, 1.2rem);
+        font-weight: 600;
+        line-height: 1.6;
+        white-space: pre-line;
+      }
+      .options-display {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.55rem;
+        margin-top: 1.1rem;
+      }
+      .opt-chip {
+        padding: 0.55rem 0.9rem;
+        border-radius: 8px;
+        font-size: 0.88rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 2px solid transparent;
+        background: var(--surface);
+      }
+      .opt-chip .letter {
+        width: 26px;
+        height: 26px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.82rem;
+        flex-shrink: 0;
+        color: #fff;
+      }
+      .opt-chip.A .letter {
+        background: #e74c3c;
+      }
+      .opt-chip.B .letter {
+        background: #3498db;
+      }
+      .opt-chip.C .letter {
+        background: #f39c12;
+      }
+      .opt-chip.D .letter {
+        background: #27ae60;
+      }
+      .opt-chip.correct-opt {
+        border-color: var(--green);
+        background: rgba(34, 197, 94, 0.1);
+      }
 
-/* ── RESPONDENTS ────────────────────────────────────────────────────── */
-.respondents { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:.9rem 1.1rem; margin-bottom:.85rem; }
-.respondents h3 { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:.65rem; }
-.respondents-list { display:flex; flex-wrap:wrap; gap:.35rem; min-height:28px; }
-.resp-chip { padding:.28rem .6rem; border-radius:20px; font-size:.72rem; font-weight:600; display:flex; align-items:center; gap:.25rem; }
-.resp-chip.answered { background:rgba(108,99,255,.18); color:var(--accent); border:1px solid rgba(108,99,255,.3); }
-.resp-chip.correct  { background:rgba(34,197,94,.18);  color:var(--green);  border:1px solid rgba(34,197,94,.3); }
-.resp-chip.wrong    { background:rgba(239,68,68,.18);   color:var(--red);    border:1px solid rgba(239,68,68,.3); }
-.progress-bar-wrap  { margin-top:.55rem; }
-.progress-label     { font-size:.7rem; color:var(--muted); margin-bottom:.2rem; display:flex; justify-content:space-between; }
-.progress-bar  { height:5px; background:var(--surface); border-radius:3px; overflow:hidden; }
-.progress-fill { height:100%; background:var(--accent); border-radius:3px; transition:width .4s ease; }
+      /* ── RESPONDENTS ────────────────────────────────────────────────────── */
+      .respondents {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 0.9rem 1.1rem;
+        margin-bottom: 0.85rem;
+      }
+      .respondents h3 {
+        font-size: 0.72rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.65rem;
+      }
+      .respondents-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        min-height: 28px;
+      }
+      .resp-chip {
+        padding: 0.28rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      .resp-chip.answered {
+        background: rgba(108, 99, 255, 0.18);
+        color: var(--accent);
+        border: 1px solid rgba(108, 99, 255, 0.3);
+      }
+      .resp-chip.correct {
+        background: rgba(34, 197, 94, 0.18);
+        color: var(--green);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+      }
+      .resp-chip.wrong {
+        background: rgba(239, 68, 68, 0.18);
+        color: var(--red);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+      .progress-bar-wrap {
+        margin-top: 0.55rem;
+      }
+      .progress-label {
+        font-size: 0.7rem;
+        color: var(--muted);
+        margin-bottom: 0.2rem;
+        display: flex;
+        justify-content: space-between;
+      }
+      .progress-bar {
+        height: 5px;
+        background: var(--surface);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 3px;
+        transition: width 0.4s ease;
+      }
 
-/* ── EXPLANATION ────────────────────────────────────────────────────── */
-.explanation-box { background:rgba(108,99,255,.08); border:1px solid rgba(108,99,255,.25); border-radius:var(--radius); padding:1rem 1.3rem; margin-bottom:.85rem; }
-.explanation-box h3 { color:var(--accent); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.5rem; }
-.explanation-box p  { font-size:.9rem; line-height:1.65; color:var(--text); }
+      /* ── EXPLANATION ────────────────────────────────────────────────────── */
+      .explanation-box {
+        background: rgba(108, 99, 255, 0.08);
+        border: 1px solid rgba(108, 99, 255, 0.25);
+        border-radius: var(--radius);
+        padding: 1rem 1.3rem;
+        margin-bottom: 0.85rem;
+      }
+      .explanation-box h3 {
+        color: var(--accent);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.5rem;
+      }
+      .explanation-box p {
+        font-size: 0.9rem;
+        line-height: 1.65;
+        color: var(--text);
+      }
 
-/* ── RESULTS TABLE ──────────────────────────────────────────────────── */
-.results-table { width:100%; border-collapse:collapse; font-size:.87rem; }
-.results-table th { text-align:left; padding:.55rem .75rem; color:var(--muted); font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; border-bottom:1px solid var(--border); }
-.results-table td { padding:.55rem .75rem; border-bottom:1px solid rgba(46,52,80,.45); vertical-align:middle; }
-.rank-badge { width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:.72rem; font-weight:800; }
-.rank-1 { background:var(--gold);  color:#111; }
-.rank-2 { background:#c0c0c0;      color:#111; }
-.rank-3 { background:#cd7f32;      color:#fff; }
-.rank-n { background:var(--surface); color:var(--muted); }
+      /* ── RESULTS TABLE ──────────────────────────────────────────────────── */
+      .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.87rem;
+      }
+      .results-table th {
+        text-align: left;
+        padding: 0.55rem 0.75rem;
+        color: var(--muted);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        border-bottom: 1px solid var(--border);
+      }
+      .results-table td {
+        padding: 0.55rem 0.75rem;
+        border-bottom: 1px solid rgba(46, 52, 80, 0.45);
+        vertical-align: middle;
+      }
+      .rank-badge {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.72rem;
+        font-weight: 800;
+      }
+      .rank-1 {
+        background: var(--gold);
+        color: #111;
+      }
+      .rank-2 {
+        background: #c0c0c0;
+        color: #111;
+      }
+      .rank-3 {
+        background: #cd7f32;
+        color: #fff;
+      }
+      .rank-n {
+        background: var(--surface);
+        color: var(--muted);
+      }
 
-/* ── LOBBY ──────────────────────────────────────────────────────────── */
-.lobby-list { max-height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:.35rem; padding-right:.15rem; }
-.lobby-list::-webkit-scrollbar { width:3px; }
-.lobby-list::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
-.student-row { display:flex; align-items:center; gap:.65rem; padding:.45rem .75rem; background:var(--surface); border-radius:8px; font-size:.84rem; }
-.student-row .avatar { width:30px; height:30px; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.78rem; flex-shrink:0; }
-.student-row .info { flex:1; overflow:hidden; }
-.student-row .sname { font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.student-row .snim  { font-size:.7rem; color:var(--muted); }
+      /* ── LOBBY ──────────────────────────────────────────────────────────── */
+      .lobby-list {
+        max-height: 220px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        padding-right: 0.15rem;
+      }
+      .lobby-list::-webkit-scrollbar {
+        width: 3px;
+      }
+      .lobby-list::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+      .student-row {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        padding: 0.45rem 0.75rem;
+        background: var(--surface);
+        border-radius: 8px;
+        font-size: 0.84rem;
+      }
+      .student-row .avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.78rem;
+        flex-shrink: 0;
+      }
+      .student-row .info {
+        flex: 1;
+        overflow: hidden;
+      }
+      .student-row .sname {
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .student-row .snim {
+        font-size: 0.7rem;
+        color: var(--muted);
+      }
 
-/* ── STUDENT WAITING / ANSWERED ─────────────────────────────────────── */
-.waiting-state  { text-align:center; padding:2rem 1rem; width:100%; max-width:360px; }
-.waiting-state .big-icon { font-size:3rem; margin-bottom:.65rem; }
-.waiting-state h2 { font-size:1.15rem; margin-bottom:.35rem; }
-.waiting-state p  { color:var(--muted); font-size:.88rem; }
-.score-banner { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:.75rem 1.1rem; display:flex; align-items:center; justify-content:space-between; width:100%; max-width:360px; margin-bottom:.85rem; }
-.score-banner .slabel { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
-.score-banner .svalue { font-size:1.4rem; font-weight:800; color:var(--gold); }
-.answered-card { text-align:center; padding:1.5rem 1rem; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); width:100%; max-width:360px; }
-.answered-card .big { font-size:2.8rem; margin-bottom:.4rem; }
-.answered-card h3   { font-size:1rem; margin-bottom:.3rem; }
-.answered-card p    { color:var(--muted); font-size:.84rem; }
+      /* ── STUDENT WAITING / ANSWERED ─────────────────────────────────────── */
+      .waiting-state {
+        text-align: center;
+        padding: 2rem 1rem;
+        width: 100%;
+        max-width: 360px;
+      }
+      .waiting-state .big-icon {
+        font-size: 3rem;
+        margin-bottom: 0.65rem;
+      }
+      .waiting-state h2 {
+        font-size: 1.15rem;
+        margin-bottom: 0.35rem;
+      }
+      .waiting-state p {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+      .score-banner {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 0.75rem 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 360px;
+        margin-bottom: 0.85rem;
+      }
+      .score-banner .slabel {
+        font-size: 0.7rem;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .score-banner .svalue {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--gold);
+      }
+      .answered-card {
+        text-align: center;
+        padding: 1.5rem 1rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        width: 100%;
+        max-width: 360px;
+      }
+      .answered-card .big {
+        font-size: 2.8rem;
+        margin-bottom: 0.4rem;
+      }
+      .answered-card h3 {
+        font-size: 1rem;
+        margin-bottom: 0.3rem;
+      }
+      .answered-card p {
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
 
-/* ── PHASE BADGE ────────────────────────────────────────────────────── */
-.phase-badge { display:inline-flex; align-items:center; gap:.3rem; padding:.22rem .65rem; border-radius:20px; font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
-.phase-lobby      { background:rgba(108,99,255,.15); color:var(--accent); }
-.phase-question   { background:rgba(34,197,94,.15);  color:var(--green); }
-.phase-discussion { background:rgba(255,101,132,.15);color:var(--accent2); }
-.phase-results    { background:rgba(255,215,0,.15);  color:var(--gold); }
+      /* ── PHASE BADGE ────────────────────────────────────────────────────── */
+      .phase-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.22rem 0.65rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .phase-lobby {
+        background: rgba(108, 99, 255, 0.15);
+        color: var(--accent);
+      }
+      .phase-question {
+        background: rgba(34, 197, 94, 0.15);
+        color: var(--green);
+      }
+      .phase-discussion {
+        background: rgba(255, 101, 132, 0.15);
+        color: var(--accent2);
+      }
+      .phase-results {
+        background: rgba(255, 215, 0, 0.15);
+        color: var(--gold);
+      }
 
-/* ── NOTIFICATION ───────────────────────────────────────────────────── */
-.notif { position:fixed; top:1rem; right:1rem; z-index:999; background:var(--card); border:1px solid var(--border); border-left-width:3px; border-left-style:solid; border-radius:10px; padding:.65rem .95rem; font-size:.84rem; box-shadow:0 8px 32px rgba(0,0,0,.45); animation:slideIn .22s ease; max-width:280px; }
-@keyframes slideIn { from { transform:translateX(110%); opacity:0; } to { transform:none; opacity:1; } }
+      /* ── NOTIFICATION ───────────────────────────────────────────────────── */
+      .notif {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 999;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-left-width: 3px;
+        border-left-style: solid;
+        border-radius: 10px;
+        padding: 0.65rem 0.95rem;
+        font-size: 0.84rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+        animation: slideIn 0.22s ease;
+        max-width: 280px;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateX(110%);
+          opacity: 0;
+        }
+        to {
+          transform: none;
+          opacity: 1;
+        }
+      }
 
-/* ── SPINNER ────────────────────────────────────────────────────────── */
-.spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .7s linear infinite; margin:0 auto .75rem; }
-@keyframes spin { to { transform:rotate(360deg); } }
+      /* ── SPINNER ────────────────────────────────────────────────────────── */
+      .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        margin: 0 auto 0.75rem;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
 
-/* ── RESPONSIVE ─────────────────────────────────────────────────────── */
-@media(max-width:600px) {
-  .options-display { grid-template-columns:1fr; }
-  .admin-controls .btn-sm { font-size:.72rem; padding:.38rem .65rem; }
-  .setup-row { grid-template-columns:1fr; }
-}
-</style>
-</head>
-<body>
-
-
-<!-- ══════════════════════════════════════════════════════════════════════
+      /* ── RESPONSIVE ─────────────────────────────────────────────────────── */
+      @media (max-width: 600px) {
+        .options-display {
+          grid-template-columns: 1fr;
+        }
+        .admin-controls .btn-sm {
+          font-size: 0.72rem;
+          padding: 0.38rem 0.65rem;
+        }
+        .setup-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ══════════════════════════════════════════════════════════════════════
   SCREEN 1 — ROLE SELECT
 ══════════════════════════════════════════════════════════════════════ -->
-<div id="role-screen" class="screen">
-  <div class="logo">Quiz<span>K18</span></div>
-  <div class="sub">Kelompok 18 · Presentasi Bahasa Inggris</div>
-  <div style="display:flex; flex-direction:column; gap:.85rem; width:100%; max-width:300px;">
-    <button class="btn btn-primary" style="margin:0;" onclick="showScreen('student-login-screen')">
-      🎓 Masuk sebagai Mahasiswa
-    </button>
-    <button class="btn btn-outline" style="width:100%;border-radius:10px;" onclick="showScreen('admin-login-screen')">
-      🔐 Admin
-    </button>
-  </div>
-  
-  <div style="color:var(--muted);font-size:.72rem;margin-top:.75rem;text-align:center;">Alifah · Annas · Hafidz</div>
-</div>
+    <div id="role-screen" class="screen">
+      <div class="logo">Quiz<span>K18</span></div>
+      <div class="sub">Kelompok 18 · Presentasi Bahasa Inggris</div>
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          gap: 0.85rem;
+          width: 100%;
+          max-width: 300px;
+        "
+      >
+        <button
+          class="btn btn-primary"
+          style="margin: 0"
+          onclick="showScreen('student-login-screen')"
+        >
+          🎓 Masuk sebagai Mahasiswa
+        </button>
+        <button
+          class="btn btn-outline"
+          style="width: 100%; border-radius: 10px"
+          onclick="showScreen('admin-login-screen')"
+        >
+          🔐 Admin
+        </button>
+      </div>
 
-<!-- ══════════════════════════════════════════════════════════════════════
+      <div
+        style="
+          color: var(--muted);
+          font-size: 0.72rem;
+          margin-top: 0.75rem;
+          text-align: center;
+        "
+      >
+        Alifah · Annas · Hafidz
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
   SCREEN 2 — ADMIN LOGIN
 ══════════════════════════════════════════════════════════════════════ -->
-<div id="admin-login-screen" class="screen">
-  <div class="logo">Admin <span>Login</span></div>
-  <div class="sub">Pengatur kuis</div>
-  <div class="card">
-    <label>Username</label>
-    <input id="al-user" type="text" placeholder="admin" autocomplete="off"/>
-    <label>Password</label>
-    <input id="al-pass" type="password" placeholder="••••••••"/>
-    <button class="btn btn-primary" onclick="adminLogin()">Masuk</button>
-    <button class="btn btn-back" onclick="showScreen('role-screen')">← Kembali</button>
-  </div>
-</div>
+    <div id="admin-login-screen" class="screen">
+      <div class="logo">Admin <span>Login</span></div>
+      <div class="sub">Pengatur kuis</div>
+      <div class="card">
+        <label>Username</label>
+        <input
+          id="al-user"
+          type="text"
+          placeholder="admin"
+          autocomplete="off"
+        />
+        <label>Password</label>
+        <input id="al-pass" type="password" placeholder="••••••••" />
+        <button class="btn btn-primary" onclick="adminLogin()">Masuk</button>
+        <button class="btn btn-back" onclick="showScreen('role-screen')">
+          ← Kembali
+        </button>
+      </div>
+    </div>
 
-<!-- ══════════════════════════════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════════════════════════════
   SCREEN 3 — STUDENT LOGIN
 ══════════════════════════════════════════════════════════════════════ -->
-<div id="student-login-screen" class="screen">
-  <div class="logo">Daftar <span>&amp; Masuk</span></div>
-  <div class="sub">Isi data diri untuk bergabung</div>
-  <div class="card">
-    <label>Nama Lengkap</label>
-    <input id="sl-name" type="text" placeholder="Nama kamu" autocomplete="off"/>
-    <label>NIM</label>
-    <input id="sl-nim" type="text" placeholder="024XXXXX" autocomplete="off"/>
-    <label>Program Studi</label>
-    <select id="sl-prodi">
-      <option value="">— Pilih Prodi —</option>
-      <option>Manajemen</option>
-      <option>Akuntansi</option>
-      <option>Ekonomi Pembangunan</option>
-      <option>Teknik Informatika</option>
-      <option>Sistem Informasi</option>
-      <option>Ilmu Komunikasi</option>
-      <option>Hukum</option>
-      <option>Psikologi</option>
-      <option>Pendidikan Bahasa Inggris</option>
-      <option>Lainnya</option>
-    </select>
-    <button class="btn btn-primary" onclick="studentLogin()">Bergabung →</button>
-    <button class="btn btn-back" onclick="showScreen('role-screen')">← Kembali</button>
-  </div>
-</div>
+    <div id="student-login-screen" class="screen">
+      <div class="logo">Daftar <span>&amp; Masuk</span></div>
+      <div class="sub">Isi data diri untuk bergabung</div>
+      <div class="card">
+        <label>Nama Lengkap</label>
+        <input
+          id="sl-name"
+          type="text"
+          placeholder="Nama kamu"
+          autocomplete="off"
+        />
+        <label>NIM</label>
+        <input
+          id="sl-nim"
+          type="text"
+          placeholder="024XXXXX"
+          autocomplete="off"
+        />
+        <label>Program Studi</label>
+        <select id="sl-prodi">
+          <option value="">— Pilih Prodi —</option>
+          <option>Manajemen</option>
+          <option>Akuntansi</option>
+          <option>Ekonomi Pembangunan</option>
+          <option>Teknik Informatika</option>
+          <option>Sistem Informasi</option>
+          <option>Ilmu Komunikasi</option>
+          <option>Hukum</option>
+          <option>Psikologi</option>
+          <option>Pendidikan Bahasa Inggris</option>
+          <option>Lainnya</option>
+        </select>
+        <button class="btn btn-primary" onclick="studentLogin()">
+          Bergabung →
+        </button>
+        <button class="btn btn-back" onclick="showScreen('role-screen')">
+          ← Kembali
+        </button>
+      </div>
+    </div>
 
-<!-- ══════════════════════════════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════════════════════════════
   SCREEN 4 — LOADING
 ══════════════════════════════════════════════════════════════════════ -->
-<div id="loading-screen" class="screen">
-  <div class="spinner"></div>
-  <div style="color:var(--muted);font-size:.9rem;" id="loading-msg">Menghubungkan...</div>
-</div>
+    <div id="loading-screen" class="screen">
+      <div class="spinner"></div>
+      <div style="color: var(--muted); font-size: 0.9rem" id="loading-msg">
+        Menghubungkan...
+      </div>
+    </div>
 
-<!-- ══════════════════════════════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════════════════════════════
   SCREEN 5 — STUDENT GAME (HP)
 ══════════════════════════════════════════════════════════════════════ -->
-<div id="student-screen" class="screen">
-  <div class="logo" style="margin-bottom:.5rem;font-size:1.3rem;">QuizK18</div>
+    <div id="student-screen" class="screen">
+      <div class="logo" style="margin-bottom: 0.5rem; font-size: 1.3rem">
+        QuizK18
+      </div>
 
-  <div class="score-banner">
-    <div>
-      <div class="slabel">Poin Kamu</div>
-      <div class="svalue" id="s-score">0</div>
+      <div class="score-banner">
+        <div>
+          <div class="slabel">Poin Kamu</div>
+          <div class="svalue" id="s-score">0</div>
+        </div>
+        <div style="text-align: right">
+          <div class="slabel">Soal</div>
+          <div id="s-qnum" style="font-size: 1.1rem; font-weight: 700">—</div>
+        </div>
+      </div>
+
+      <!-- waiting -->
+      <div id="s-waiting" class="waiting-state">
+        <div class="big-icon">⏳</div>
+        <h2>Menunggu Admin...</h2>
+        <p id="s-waiting-sub">
+          Kamu sudah terdaftar. Tunggu admin memulai soal.
+        </p>
+      </div>
+
+      <!-- answer buttons -->
+      <div
+        id="s-answer-section"
+        style="
+          display: none;
+          flex-direction: column;
+          align-items: center;
+          width: 100%;
+          gap: 0.65rem;
+        "
+      >
+        <div style="font-size: 0.8rem; color: var(--muted); text-align: center">
+          Pilih jawaban yang benar 👇
+        </div>
+        <div class="answer-grid">
+          <button class="answer-btn opt-A" onclick="submitAnswer('A')">
+            A<span class="lbl" id="s-opt-A"></span>
+          </button>
+          <button class="answer-btn opt-B" onclick="submitAnswer('B')">
+            B<span class="lbl" id="s-opt-B"></span>
+          </button>
+          <button class="answer-btn opt-C" onclick="submitAnswer('C')">
+            C<span class="lbl" id="s-opt-C"></span>
+          </button>
+          <button class="answer-btn opt-D" onclick="submitAnswer('D')">
+            D<span class="lbl" id="s-opt-D"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- answered -->
+      <div id="s-answered" style="display: none; width: 100%; max-width: 360px">
+        <div class="answered-card">
+          <div class="big" id="s-ans-icon">⏳</div>
+          <h3 id="s-ans-title">Jawaban terkirim!</h3>
+          <p id="s-ans-sub">Menunggu mahasiswa lain selesai...</p>
+        </div>
+      </div>
+
+      <!-- discussion -->
+      <div
+        id="s-discussion"
+        style="display: none; width: 100%; max-width: 360px"
+      >
+        <div class="answered-card">
+          <div class="big">📖</div>
+          <h3>Pembahasan</h3>
+          <p
+            style="
+              margin-top: 0.5rem;
+              text-align: left;
+              font-size: 0.84rem;
+              line-height: 1.6;
+            "
+            id="s-discuss-txt"
+          ></p>
+        </div>
+      </div>
     </div>
-    <div style="text-align:right;">
-      <div class="slabel">Soal</div>
-      <div id="s-qnum" style="font-size:1.1rem;font-weight:700;">—</div>
-    </div>
-  </div>
 
-  <!-- waiting -->
-  <div id="s-waiting" class="waiting-state">
-    <div class="big-icon">⏳</div>
-    <h2>Menunggu Admin...</h2>
-    <p id="s-waiting-sub">Kamu sudah terdaftar. Tunggu admin memulai soal.</p>
-  </div>
-
-  <!-- answer buttons -->
-  <div id="s-answer-section" style="display:none;flex-direction:column;align-items:center;width:100%;gap:.65rem;">
-    <div style="font-size:.8rem;color:var(--muted);text-align:center;">Pilih jawaban yang benar 👇</div>
-    <div class="answer-grid">
-      <button class="answer-btn opt-A" onclick="submitAnswer('A')">A<span class="lbl" id="s-opt-A"></span></button>
-      <button class="answer-btn opt-B" onclick="submitAnswer('B')">B<span class="lbl" id="s-opt-B"></span></button>
-      <button class="answer-btn opt-C" onclick="submitAnswer('C')">C<span class="lbl" id="s-opt-C"></span></button>
-      <button class="answer-btn opt-D" onclick="submitAnswer('D')">D<span class="lbl" id="s-opt-D"></span></button>
-    </div>
-  </div>
-
-  <!-- answered -->
-  <div id="s-answered" style="display:none;width:100%;max-width:360px;">
-    <div class="answered-card">
-      <div class="big" id="s-ans-icon">⏳</div>
-      <h3 id="s-ans-title">Jawaban terkirim!</h3>
-      <p id="s-ans-sub">Menunggu mahasiswa lain selesai...</p>
-    </div>
-  </div>
-
-  <!-- discussion -->
-  <div id="s-discussion" style="display:none;width:100%;max-width:360px;">
-    <div class="answered-card">
-      <div class="big">📖</div>
-      <h3>Pembahasan</h3>
-      <p style="margin-top:.5rem;text-align:left;font-size:.84rem;line-height:1.6;" id="s-discuss-txt"></p>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════════════════════════════
   SCREEN 6 — ADMIN PANEL
 ══════════════════════════════════════════════════════════════════════ -->
-<div id="admin-screen" class="screen" style="display:none;flex-direction:column;">
-
-  <div class="admin-header">
-    <div>
-      <div class="logo">Admin <span>Panel</span></div>
-      <div id="a-phase-badge" class="phase-badge phase-lobby" style="margin-top:.3rem;">⏳ Lobby</div>
-    </div>
-    <div class="admin-controls">
-      <button id="btn-start"   class="btn btn-success btn-sm" onclick="adminStart()">▶ Mulai Kuis</button>
-      <button id="btn-prev"    class="btn btn-outline  btn-sm" onclick="adminPrev()"    style="display:none;">← Prev</button>
-      <button id="btn-discuss" class="btn btn-warn     btn-sm" onclick="adminDiscuss()" style="display:none;">💡 Bahas</button>
-      <button id="btn-next"    class="btn btn-success  btn-sm" onclick="adminNext()"    style="display:none;">Berikutnya →</button>
-      <button id="btn-results" class="btn btn-gold     btn-sm" onclick="adminShowResults()" style="display:none;">🏆 Hasil</button>
-      <button class="btn btn-danger btn-sm" onclick="adminReset()">⟳ Reset</button>
-    </div>
-  </div>
-
-  <div class="admin-body">
-
-    <!-- LOBBY -->
-    <div id="a-lobby-view">
-      <div class="card" style="max-width:100%;margin-bottom:.85rem;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;">
-          <div style="font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Mahasiswa Terdaftar</div>
-          <div id="a-lobby-count" style="font-size:1.4rem;font-weight:800;color:var(--accent);">0</div>
-        </div>
-        <div class="lobby-list" id="a-lobby-list">
-          <div style="color:var(--muted);font-size:.84rem;text-align:center;padding:.8rem;">Belum ada yang bergabung...</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- QUESTION -->
-    <div id="a-question-view" style="display:none;">
-      <div class="question-box">
-        <div class="q-category" id="a-q-cat">—</div>
-        <div class="q-number"   id="a-q-num">Soal — / —</div>
-        <div class="q-text"     id="a-q-txt">—</div>
-        <div class="options-display" id="a-q-opts"></div>
-      </div>
-
-      <div class="respondents">
-        <h3>Sudah menjawab: <span id="a-resp-n">0</span> / <span id="a-total-n">0</span> mahasiswa</h3>
-        <div class="respondents-list" id="a-resp-list"></div>
-        <div class="progress-bar-wrap">
-          <div class="progress-label">
-            <span>Progres</span><span id="a-resp-pct">0%</span>
+    <div
+      id="admin-screen"
+      class="screen"
+      style="display: none; flex-direction: column"
+    >
+      <div class="admin-header">
+        <div>
+          <div class="logo">Admin <span>Panel</span></div>
+          <div
+            id="a-phase-badge"
+            class="phase-badge phase-lobby"
+            style="margin-top: 0.3rem"
+          >
+            ⏳ Lobby
           </div>
-          <div class="progress-bar"><div class="progress-fill" id="a-resp-bar" style="width:0%"></div></div>
+        </div>
+        <div class="admin-controls">
+          <button
+            id="btn-start"
+            class="btn btn-success btn-sm"
+            onclick="adminStart()"
+          >
+            ▶ Mulai Kuis
+          </button>
+          <button
+            id="btn-prev"
+            class="btn btn-outline btn-sm"
+            onclick="adminPrev()"
+            style="display: none"
+          >
+            ← Prev
+          </button>
+          <button
+            id="btn-discuss"
+            class="btn btn-warn btn-sm"
+            onclick="adminDiscuss()"
+            style="display: none"
+          >
+            💡 Bahas
+          </button>
+          <button
+            id="btn-next"
+            class="btn btn-success btn-sm"
+            onclick="adminNext()"
+            style="display: none"
+          >
+            Berikutnya →
+          </button>
+          <button
+            id="btn-results"
+            class="btn btn-gold btn-sm"
+            onclick="adminShowResults()"
+            style="display: none"
+          >
+            🏆 Hasil
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="adminReset()">
+            ⟳ Reset
+          </button>
         </div>
       </div>
 
-      <div id="a-explanation" style="display:none;" class="explanation-box">
-        <h3>📖 Pembahasan</h3>
-        <p id="a-expl-txt"></p>
-      </div>
-    </div>
+      <div class="admin-body">
+        <!-- LOBBY -->
+        <div id="a-lobby-view">
+          <div class="card" style="max-width: 100%; margin-bottom: 0.85rem">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 0.65rem;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.74rem;
+                  color: var(--muted);
+                  text-transform: uppercase;
+                  letter-spacing: 0.06em;
+                "
+              >
+                Mahasiswa Terdaftar
+              </div>
+              <div
+                id="a-lobby-count"
+                style="
+                  font-size: 1.4rem;
+                  font-weight: 800;
+                  color: var(--accent);
+                "
+              >
+                0
+              </div>
+            </div>
+            <div class="lobby-list" id="a-lobby-list">
+              <div
+                style="
+                  color: var(--muted);
+                  font-size: 0.84rem;
+                  text-align: center;
+                  padding: 0.8rem;
+                "
+              >
+                Belum ada yang bergabung...
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <!-- RESULTS -->
-    <div id="a-results-view" style="display:none;">
-      <div class="card" style="max-width:100%;">
-        <div style="font-size:1rem;font-weight:700;margin-bottom:.9rem;color:var(--gold);">🏆 Hasil Akhir Kuis</div>
-        <div style="overflow-x:auto;">
-          <table class="results-table">
-            <thead><tr><th>#</th><th>Nama</th><th>NIM</th><th>Prodi</th><th style="text-align:right;">Skor</th></tr></thead>
-            <tbody id="a-results-body"></tbody>
-          </table>
+        <!-- QUESTION -->
+        <div id="a-question-view" style="display: none">
+          <div class="question-box">
+            <div class="q-category" id="a-q-cat">—</div>
+            <div class="q-number" id="a-q-num">Soal — / —</div>
+            <div class="q-text" id="a-q-txt">—</div>
+            <div class="options-display" id="a-q-opts"></div>
+          </div>
+
+          <div class="respondents">
+            <h3>
+              Sudah menjawab: <span id="a-resp-n">0</span> /
+              <span id="a-total-n">0</span> mahasiswa
+            </h3>
+            <div class="respondents-list" id="a-resp-list"></div>
+            <div class="progress-bar-wrap">
+              <div class="progress-label">
+                <span>Progres</span><span id="a-resp-pct">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  id="a-resp-bar"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="a-explanation" style="display: none" class="explanation-box">
+            <h3>📖 Pembahasan</h3>
+            <p id="a-expl-txt"></p>
+          </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="a-results-view" style="display: none">
+          <div class="card" style="max-width: 100%">
+            <div
+              style="
+                font-size: 1rem;
+                font-weight: 700;
+                margin-bottom: 0.9rem;
+                color: var(--gold);
+              "
+            >
+              🏆 Hasil Akhir Kuis
+            </div>
+            <div style="overflow-x: auto">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Nama</th>
+                    <th>NIM</th>
+                    <th>Prodi</th>
+                    <th style="text-align: right">Skor</th>
+                  </tr>
+                </thead>
+                <tbody id="a-results-body"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
+      <!-- /admin-body -->
     </div>
 
-  </div><!-- /admin-body -->
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════════════════════════════
   FIREBASE SDK + APP LOGIC
 ══════════════════════════════════════════════════════════════════════ -->
-<script type="module">
-// ── IMPORT CONFIG ───────────────────────────────────────────────────────────
-import { FIREBASE_CONFIG } from './config.js';
+    <script type="module">
+      // ── IMPORT CONFIG ───────────────────────────────────────────────────────────
+      import { FIREBASE_CONFIG } from "./config.js";
 
-// ── QUESTIONS DATA ──────────────────────────────────────────────────────────
-const QUESTIONS = [
-  { id:1,  cat:"Error Identification", q:'"Yanto, along with his pet chicken, are cooking noodles in the kitchen using a broken toaster."', opts:{A:"along with",B:"his pet chicken",C:"are cooking",D:"using a broken toaster"}, ans:"C", expl:'Kesalahan: "are cooking" seharusnya "is cooking". Subjek tunggal "Yanto" memerlukan verb tunggal. Frasa "along with his pet chicken" hanya keterangan tambahan, tidak mengubah subjek.' },
-  { id:2,  cat:"Error Identification", q:'"Agus is one of the most talented garbage collector in our village who can turn old shoes into skates."', opts:{A:"one of the",B:"most talented",C:"garbage collector",D:"who can turn"}, ans:"C", expl:'Kesalahan: "garbage collector" seharusnya "garbage collectors". Setelah "one of the most..." harus menggunakan kata benda plural.' },
-  { id:3,  cat:"Error Identification", q:'"When Yanto arrived at the station, the train already left so he had to wait for the next one."', opts:{A:"When Yanto arrived",B:"at the station",C:"the train already left",D:"for the next one"}, ans:"C", expl:'Kesalahan: "the train already left" seharusnya "the train had already left". Past perfect diperlukan karena "train left" terjadi sebelum "Yanto arrived".' },
-  { id:4,  cat:"Error Identification", q:'"Agus, as well as his classmates, were waiting for the lecturer outside the classroom."', opts:{A:"as well as",B:"his classmates",C:"were waiting",D:"outside the classroom"}, ans:"C", expl:'Kesalahan: "were waiting" seharusnya "was waiting". Subjek utama "Agus" adalah tunggal. "as well as his classmates" hanya informasi tambahan.' },
-  { id:5,  cat:"Error Identification", q:'"The teacher told Agus that the exam will be held tomorrow and everyone should prepare themselves well."', opts:{A:"The teacher told",B:"that the exam",C:"will be held",D:"prepare themselves"}, ans:"C", expl:'Kesalahan: "will be held" seharusnya "would be held". Dalam reported speech, setelah past tense "told", "will" berubah menjadi "would".' },
-  { id:6,  cat:"Error Identification", q:'"His presentation was so boring that nobody listened to it attentively and take notes."', opts:{A:"so boring that",B:"nobody listened",C:"to it attentively",D:"take notes"}, ans:"D", expl:'"take notes" seharusnya "took notes". Kesalahan parallel structure: "listened" (past) harus sejajar dengan "took" (past), bukan "take" (present).' },
-  { id:7,  cat:"Error Identification", q:'"If I would have known about the meeting, I would have attended it without any hesitation."', opts:{A:"If I would have known",B:"about the meeting",C:"I would have attended",D:"without any hesitation"}, ans:"A", expl:'"If I would have known" seharusnya "If I had known". Conditional type 3: klausa if menggunakan past perfect (had + V3), bukan "would have".' },
-  { id:8,  cat:"Word Choice", q:'"Yanto ______ his pet chicken every morning before going to school."', opts:{A:"Feed",B:"Feeds",C:"Feeding",D:"Fed"}, ans:"B", expl:'"Feeds" tepat karena subjek "Yanto" adalah singular dan kalimat menyatakan kebiasaan (simple present). Verb singular: feeds.' },
-  { id:9,  cat:"Word Choice", q:'"The explorer ______ into the mysterious cave where glowing crystals had never been seen before."', opts:{A:"walks",B:"walked",C:"has walked",D:"will walk"}, ans:"B", expl:'"Walked" tepat untuk menceritakan peristiwa di masa lalu (simple past tense).' },
-  { id:10, cat:"Word Choice", q:'"The rare blue monkey is ______ creature in the entire rainforest, with only 12 individuals left in the wild."', opts:{A:"rare",B:"more rare",C:"the rarest",D:"most rare"}, ans:"C", expl:'"The rarest" tepat karena frasa "in the entire rainforest" menunjukkan superlative. Struktur: the + adjective-est.' },
-  { id:11, cat:"Word Choice", q:'"The new policy will have a significant ___ on employee productivity."', opts:{A:"affect",B:"impacting",C:"effect",D:"affecting"}, ans:"C", expl:'"Effect" (noun) tepat setelah "a significant". "Affect" adalah verb, bukan noun.' },
-  { id:12, cat:"Word Choice", q:'"The team leader ___ the members to stay focused during the competition."', opts:{A:"Ignored",B:"Encouraged",C:"Avoided",D:"Delayed"}, ans:"B", expl:'"Encouraged" berarti memberi semangat. Pilihan lain tidak sesuai konteks kalimat yang positif.' },
-  { id:13, cat:"Word Choice", q:'"The company needs to ___ its services to meet customer expectations."', opts:{A:"Adapt",B:"Adopt",C:"Adept",D:"Accept"}, ans:"A", expl:'"Adapt" berarti menyesuaikan dengan kondisi baru, paling tepat untuk konteks kalimat ini.' },
-  { id:14, cat:"Written Expression", q:"The students in the computer lab is working on their assignments.\n\nWhich part is incorrect?", opts:{A:"The students",B:"in the computer lab",C:"is working",D:"on their assignments"}, ans:"C", expl:'"is working" seharusnya "are working". Subjek "The students" plural memerlukan "are".' },
-  { id:15, cat:"Written Expression", q:"Sarah enjoys to read novels in her free time.\n\nWhich part is incorrect?", opts:{A:"Sarah",B:"enjoys",C:"to read",D:"in her free time"}, ans:"C", expl:'"to read" seharusnya "reading". Kata kerja "enjoy" diikuti verb-ing, bukan infinitive.' },
-  { id:16, cat:"Written Expression", q:"My new laptop is more faster than my old one.\n\nWhich part is incorrect?", opts:{A:"My new laptop",B:"more faster",C:"than my old one",D:"old one"}, ans:"B", expl:'"more faster" adalah double comparative yang salah. "faster" sudah comparative, tidak perlu "more".' },
-  { id:17, cat:"Written Expression", q:"The teacher suggested to study harder for the final exam.\n\nWhich part is incorrect?", opts:{A:"The teacher",B:"suggested",C:"to study",D:"for the final exam"}, ans:"C", expl:'"to study" seharusnya "studying". Setelah "suggest" digunakan verb-ing.' },
-  { id:18, cat:"Written Expression", q:"Neither my brother nor my sister were at home yesterday.\n\nWhich part is incorrect?", opts:{A:"Neither my brother",B:"nor my sister",C:"yesterday",D:"were"}, ans:"D", expl:'"were" seharusnya "was". Dalam pola neither...nor, verb mengikuti subjek terdekat "my sister" yang singular.' },
-  { id:19, cat:"Written Expression", q:"The report was written very neat before submission.\n\nWhich part is incorrect?", opts:{A:"The report",B:"was written",C:"very neat",D:"before submission"}, ans:"C", expl:'"very neat" seharusnya "very neatly". Diperlukan adverb untuk menerangkan cara verb "was written".' },
-  { id:20, cat:"Written Expression", q:"The number of books in the library have increased this year.\n\nWhich part is incorrect?", opts:{A:"The number",B:"in the library",C:"have increased",D:"this year"}, ans:"C", expl:'"have increased" seharusnya "has increased". Subjek utama "The number" adalah singular.' },
-];
+      // ── QUESTIONS DATA ──────────────────────────────────────────────────────────
+      const QUESTIONS = [
+        {
+          id: 1,
+          cat: "Error Identification",
+          q: '"Yanto, along with his pet chicken, are cooking noodles in the kitchen using a broken toaster."',
+          opts: {
+            A: "along with",
+            B: "his pet chicken",
+            C: "are cooking",
+            D: "using a broken toaster",
+          },
+          ans: "C",
+          expl: 'Kesalahan: "are cooking" seharusnya "is cooking". Subjek tunggal "Yanto" memerlukan verb tunggal. Frasa "along with his pet chicken" hanya keterangan tambahan, tidak mengubah subjek.',
+        },
+        {
+          id: 2,
+          cat: "Error Identification",
+          q: '"Agus is one of the most talented garbage collector in our village who can turn old shoes into skates."',
+          opts: {
+            A: "one of the",
+            B: "most talented",
+            C: "garbage collector",
+            D: "who can turn",
+          },
+          ans: "C",
+          expl: 'Kesalahan: "garbage collector" seharusnya "garbage collectors". Setelah "one of the most..." harus menggunakan kata benda plural.',
+        },
+        {
+          id: 3,
+          cat: "Error Identification",
+          q: '"When Yanto arrived at the station, the train already left so he had to wait for the next one."',
+          opts: {
+            A: "When Yanto arrived",
+            B: "at the station",
+            C: "the train already left",
+            D: "for the next one",
+          },
+          ans: "C",
+          expl: 'Kesalahan: "the train already left" seharusnya "the train had already left". Past perfect diperlukan karena "train left" terjadi sebelum "Yanto arrived".',
+        },
+        {
+          id: 4,
+          cat: "Error Identification",
+          q: '"Agus, as well as his classmates, were waiting for the lecturer outside the classroom."',
+          opts: {
+            A: "as well as",
+            B: "his classmates",
+            C: "were waiting",
+            D: "outside the classroom",
+          },
+          ans: "C",
+          expl: 'Kesalahan: "were waiting" seharusnya "was waiting". Subjek utama "Agus" adalah tunggal. "as well as his classmates" hanya informasi tambahan.',
+        },
+        {
+          id: 5,
+          cat: "Error Identification",
+          q: '"The teacher told Agus that the exam will be held tomorrow and everyone should prepare themselves well."',
+          opts: {
+            A: "The teacher told",
+            B: "that the exam",
+            C: "will be held",
+            D: "prepare themselves",
+          },
+          ans: "C",
+          expl: 'Kesalahan: "will be held" seharusnya "would be held". Dalam reported speech, setelah past tense "told", "will" berubah menjadi "would".',
+        },
+        {
+          id: 6,
+          cat: "Error Identification",
+          q: '"His presentation was so boring that nobody listened to it attentively and take notes."',
+          opts: {
+            A: "so boring that",
+            B: "nobody listened",
+            C: "to it attentively",
+            D: "take notes",
+          },
+          ans: "D",
+          expl: '"take notes" seharusnya "took notes". Kesalahan parallel structure: "listened" (past) harus sejajar dengan "took" (past), bukan "take" (present).',
+        },
+        {
+          id: 7,
+          cat: "Error Identification",
+          q: '"If I would have known about the meeting, I would have attended it without any hesitation."',
+          opts: {
+            A: "If I would have known",
+            B: "about the meeting",
+            C: "I would have attended",
+            D: "without any hesitation",
+          },
+          ans: "A",
+          expl: '"If I would have known" seharusnya "If I had known". Conditional type 3: klausa if menggunakan past perfect (had + V3), bukan "would have".',
+        },
+        {
+          id: 8,
+          cat: "Word Choice",
+          q: '"Yanto ______ his pet chicken every morning before going to school."',
+          opts: { A: "Feed", B: "Feeds", C: "Feeding", D: "Fed" },
+          ans: "B",
+          expl: '"Feeds" tepat karena subjek "Yanto" adalah singular dan kalimat menyatakan kebiasaan (simple present). Verb singular: feeds.',
+        },
+        {
+          id: 9,
+          cat: "Word Choice",
+          q: '"The explorer ______ into the mysterious cave where glowing crystals had never been seen before."',
+          opts: { A: "walks", B: "walked", C: "has walked", D: "will walk" },
+          ans: "B",
+          expl: '"Walked" tepat untuk menceritakan peristiwa di masa lalu (simple past tense).',
+        },
+        {
+          id: 10,
+          cat: "Word Choice",
+          q: '"The rare blue monkey is ______ creature in the entire rainforest, with only 12 individuals left in the wild."',
+          opts: { A: "rare", B: "more rare", C: "the rarest", D: "most rare" },
+          ans: "C",
+          expl: '"The rarest" tepat karena frasa "in the entire rainforest" menunjukkan superlative. Struktur: the + adjective-est.',
+        },
+        {
+          id: 11,
+          cat: "Word Choice",
+          q: '"The new policy will have a significant ___ on employee productivity."',
+          opts: { A: "affect", B: "impacting", C: "effect", D: "affecting" },
+          ans: "C",
+          expl: '"Effect" (noun) tepat setelah "a significant". "Affect" adalah verb, bukan noun.',
+        },
+        {
+          id: 12,
+          cat: "Word Choice",
+          q: '"The team leader ___ the members to stay focused during the competition."',
+          opts: { A: "Ignored", B: "Encouraged", C: "Avoided", D: "Delayed" },
+          ans: "B",
+          expl: '"Encouraged" berarti memberi semangat. Pilihan lain tidak sesuai konteks kalimat yang positif.',
+        },
+        {
+          id: 13,
+          cat: "Word Choice",
+          q: '"The company needs to ___ its services to meet customer expectations."',
+          opts: { A: "Adapt", B: "Adopt", C: "Adept", D: "Accept" },
+          ans: "A",
+          expl: '"Adapt" berarti menyesuaikan dengan kondisi baru, paling tepat untuk konteks kalimat ini.',
+        },
+        {
+          id: 14,
+          cat: "Written Expression",
+          q: "The students in the computer lab is working on their assignments.\n\nWhich part is incorrect?",
+          opts: {
+            A: "The students",
+            B: "in the computer lab",
+            C: "is working",
+            D: "on their assignments",
+          },
+          ans: "C",
+          expl: '"is working" seharusnya "are working". Subjek "The students" plural memerlukan "are".',
+        },
+        {
+          id: 15,
+          cat: "Written Expression",
+          q: "Sarah enjoys to read novels in her free time.\n\nWhich part is incorrect?",
+          opts: {
+            A: "Sarah",
+            B: "enjoys",
+            C: "to read",
+            D: "in her free time",
+          },
+          ans: "C",
+          expl: '"to read" seharusnya "reading". Kata kerja "enjoy" diikuti verb-ing, bukan infinitive.',
+        },
+        {
+          id: 16,
+          cat: "Written Expression",
+          q: "My new laptop is more faster than my old one.\n\nWhich part is incorrect?",
+          opts: {
+            A: "My new laptop",
+            B: "more faster",
+            C: "than my old one",
+            D: "old one",
+          },
+          ans: "B",
+          expl: '"more faster" adalah double comparative yang salah. "faster" sudah comparative, tidak perlu "more".',
+        },
+        {
+          id: 17,
+          cat: "Written Expression",
+          q: "The teacher suggested to study harder for the final exam.\n\nWhich part is incorrect?",
+          opts: {
+            A: "The teacher",
+            B: "suggested",
+            C: "to study",
+            D: "for the final exam",
+          },
+          ans: "C",
+          expl: '"to study" seharusnya "studying". Setelah "suggest" digunakan verb-ing.',
+        },
+        {
+          id: 18,
+          cat: "Written Expression",
+          q: "Neither my brother nor my sister were at home yesterday.\n\nWhich part is incorrect?",
+          opts: {
+            A: "Neither my brother",
+            B: "nor my sister",
+            C: "yesterday",
+            D: "were",
+          },
+          ans: "D",
+          expl: '"were" seharusnya "was". Dalam pola neither...nor, verb mengikuti subjek terdekat "my sister" yang singular.',
+        },
+        {
+          id: 19,
+          cat: "Written Expression",
+          q: "The report was written very neat before submission.\n\nWhich part is incorrect?",
+          opts: {
+            A: "The report",
+            B: "was written",
+            C: "very neat",
+            D: "before submission",
+          },
+          ans: "C",
+          expl: '"very neat" seharusnya "very neatly". Diperlukan adverb untuk menerangkan cara verb "was written".',
+        },
+        {
+          id: 20,
+          cat: "Written Expression",
+          q: "The number of books in the library have increased this year.\n\nWhich part is incorrect?",
+          opts: {
+            A: "The number",
+            B: "in the library",
+            C: "have increased",
+            D: "this year",
+          },
+          ans: "C",
+          expl: '"have increased" seharusnya "has increased". Subjek utama "The number" adalah singular.',
+        },
+      ];
 
-// ── FIREBASE IMPORTS ────────────────────────────────────────────────────────
-import { initializeApp }                       from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, update, onValue, remove }
-                                               from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+      // ── FIREBASE IMPORTS ────────────────────────────────────────────────────────
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        get,
+        update,
+        onValue,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ── STATE ───────────────────────────────────────────────────────────────────
-let db          = null;
-let currentRole = null;   // 'admin' | 'student'
-let currentNIM  = null;
-let pollUnsubscribe = null;
-let hasAnsweredThisQ = false;
-let lastRenderedQ    = -1;
-let questionStartedAt = null;
+      // ── STATE ───────────────────────────────────────────────────────────────────
+      let db = null;
+      let currentRole = null; // 'admin' | 'student'
+      let currentNIM = null;
+      let pollUnsubscribe = null;
+      let hasAnsweredThisQ = false;
+      let lastRenderedQ = -1;
+      let questionStartedAt = null;
 
-// ── FIREBASE CONFIG IMPORTED FROM config.js ──────────────────────────────────
-// (Credentials are loaded from ./config.js - DO NOT commit actual credentials!)
+      // ── FIREBASE CONFIG IMPORTED FROM config.js ──────────────────────────────────
+      // (Credentials are loaded from ./config.js - DO NOT commit actual credentials!)
 
-function initFirebase() {
-  try {
-    const app = initializeApp(FIREBASE_CONFIG);
-    db = getDatabase(app);
-    showScreen('role-screen');
-  } catch(e) {
-    notify('Gagal inisialisasi Firebase: ' + e.message, 'error');
-  }
-}
-
-// ── ROUTING ─────────────────────────────────────────────────────────────────
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => {
-    s.classList.remove('active'); s.style.display = 'none';
-  });
-  const el = document.getElementById(id);
-  if (el) { el.style.display = 'flex'; el.classList.add('active'); }
-}
-window.showScreen = showScreen;
-
-// ── ADMIN LOGIN ──────────────────────────────────────────────────────────────
-async function adminLogin() {
-  const u = document.getElementById('al-user').value.trim();
-  const p = document.getElementById('al-pass').value.trim();
-  if (u !== 'admin' || p !== 'password') { notify('Username atau password salah!','error'); return; }
-  currentRole = 'admin';
-  showScreen('admin-screen');
-  subscribeAdmin();
-}
-window.adminLogin = adminLogin;
-
-// ── STUDENT LOGIN ────────────────────────────────────────────────────────────
-async function studentLogin() {
-  const name  = document.getElementById('sl-name').value.trim();
-  const nim   = document.getElementById('sl-nim').value.trim();
-  const prodi = document.getElementById('sl-prodi').value;
-  if (!name || !nim || !prodi) { notify('Isi semua data terlebih dahulu!','error'); return; }
-
-  showScreen('loading-screen');
-  document.getElementById('loading-msg').textContent = 'Mendaftarkan...';
-
-  try {
-    const snap = await get(ref(db, `students/${nim}`));
-    if (snap.exists()) {
-      const existing = snap.val();
-      if (existing.name !== name) {
-        notify('NIM sudah digunakan dengan nama lain!','error');
-        showScreen('student-login-screen'); return;
+      function initFirebase() {
+        try {
+          const app = initializeApp(FIREBASE_CONFIG);
+          db = getDatabase(app);
+          showScreen("role-screen");
+        } catch (e) {
+          notify("Gagal inisialisasi Firebase: " + e.message, "error");
+        }
       }
-    } else {
-      await set(ref(db, `students/${nim}`), {
-        name, nim, prodi, score: 0, joinedAt: Date.now()
-      });
-    }
-    currentRole = 'student';
-    currentNIM  = nim;
-    showScreen('student-screen');
-    subscribeStudent();
-  } catch(e) {
-    notify('Gagal terhubung: ' + e.message,'error');
-    showScreen('student-login-screen');
-  }
-}
-window.studentLogin = studentLogin;
 
-// ── FIREBASE HELPERS ─────────────────────────────────────────────────────────
-function gameRef()     { return ref(db, 'gameState'); }
-function studentsRef() { return ref(db, 'students'); }
-function answersRef()  { return ref(db, 'answers'); }
+      // ── ROUTING ─────────────────────────────────────────────────────────────────
+      function showScreen(id) {
+        document.querySelectorAll(".screen").forEach((s) => {
+          s.classList.remove("active");
+          s.style.display = "none";
+        });
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.display = "flex";
+          el.classList.add("active");
+        }
+      }
+      window.showScreen = showScreen;
 
-async function getGameState() {
-  const snap = await get(gameRef());
-  return snap.exists() ? snap.val() : { phase:'lobby', currentQ:-1, showAnswer:false, gameStarted:false, questionStartedAt:null };
-}
+      // ── ADMIN LOGIN ──────────────────────────────────────────────────────────────
+      async function adminLogin() {
+        const u = document.getElementById("al-user").value.trim();
+        const p = document.getElementById("al-pass").value.trim();
+        if (u !== "admin" || p !== "password") {
+          notify("Username atau password salah!", "error");
+          return;
+        }
+        currentRole = "admin";
+        showScreen("admin-screen");
+        subscribeAdmin();
+      }
+      window.adminLogin = adminLogin;
 
-// ── ADMIN ACTIONS ────────────────────────────────────────────────────────────
-async function adminStart() {
-  const st = await getGameState();
-  const nextQ = st.gameStarted ? st.currentQ + 1 : 0;
-  const now   = Date.now();
-  await update(gameRef(), { phase:'question', currentQ: nextQ, showAnswer:false, gameStarted:true, questionStartedAt:now });
-  await remove(answersRef());
-}
-window.adminStart = adminStart;
+      // ── STUDENT LOGIN ────────────────────────────────────────────────────────────
+      async function studentLogin() {
+        const name = document.getElementById("sl-name").value.trim();
+        const nim = document.getElementById("sl-nim").value.trim();
+        const prodi = document.getElementById("sl-prodi").value;
+        if (!name || !nim || !prodi) {
+          notify("Isi semua data terlebih dahulu!", "error");
+          return;
+        }
 
-async function adminNext() {
-  const st  = await getGameState();
-  const nxt = st.currentQ + 1;
-  if (nxt >= QUESTIONS.length) {
-    await update(gameRef(), { phase:'results' });
-  } else {
-    const now = Date.now();
-    await update(gameRef(), { phase:'question', currentQ:nxt, showAnswer:false, questionStartedAt:now });
-    await remove(answersRef());
-  }
-}
-window.adminNext = adminNext;
+        showScreen("loading-screen");
+        document.getElementById("loading-msg").textContent = "Mendaftarkan...";
 
-async function adminPrev() {
-  const st = await getGameState();
-  if (st.currentQ <= 0) return;
-  const now = Date.now();
-  await update(gameRef(), { phase:'question', currentQ:st.currentQ-1, showAnswer:false, questionStartedAt:now });
-  await remove(answersRef());
-}
-window.adminPrev = adminPrev;
+        try {
+          const snap = await get(ref(db, `students/${nim}`));
+          if (snap.exists()) {
+            const existing = snap.val();
+            if (existing.name !== name) {
+              notify("NIM sudah digunakan dengan nama lain!", "error");
+              showScreen("student-login-screen");
+              return;
+            }
+          } else {
+            await set(ref(db, `students/${nim}`), {
+              name,
+              nim,
+              prodi,
+              score: 0,
+              joinedAt: Date.now(),
+            });
+          }
+          currentRole = "student";
+          currentNIM = nim;
+          showScreen("student-screen");
+          subscribeStudent();
+        } catch (e) {
+          notify("Gagal terhubung: " + e.message, "error");
+          showScreen("student-login-screen");
+        }
+      }
+      window.studentLogin = studentLogin;
 
-async function adminDiscuss() {
-  await update(gameRef(), { phase:'discussion', showAnswer:true });
-}
-window.adminDiscuss = adminDiscuss;
+      // ── FIREBASE HELPERS ─────────────────────────────────────────────────────────
+      function gameRef() {
+        return ref(db, "gameState");
+      }
+      function studentsRef() {
+        return ref(db, "students");
+      }
+      function answersRef() {
+        return ref(db, "answers");
+      }
 
-async function adminShowResults() {
-  await update(gameRef(), { phase:'results' });
-}
-window.adminShowResults = adminShowResults;
+      async function getGameState() {
+        const snap = await get(gameRef());
+        return snap.exists()
+          ? snap.val()
+          : {
+              phase: "lobby",
+              currentQ: -1,
+              showAnswer: false,
+              gameStarted: false,
+              questionStartedAt: null,
+            };
+      }
 
-async function adminReset() {
-  if (!confirm('Reset semua data? Skor semua mahasiswa akan hilang.')) return;
-  await Promise.all([
-    remove(gameRef()),
-    remove(studentsRef()),
-    remove(answersRef()),
-  ]);
-  notify('Reset berhasil.','success');
-}
-window.adminReset = adminReset;
+      // ── ADMIN ACTIONS ────────────────────────────────────────────────────────────
+      async function adminStart() {
+        const st = await getGameState();
+        const nextQ = st.gameStarted ? st.currentQ + 1 : 0;
+        const now = Date.now();
+        await update(gameRef(), {
+          phase: "question",
+          currentQ: nextQ,
+          showAnswer: false,
+          gameStarted: true,
+          questionStartedAt: now,
+        });
+        await remove(answersRef());
+      }
+      window.adminStart = adminStart;
 
-// ── ADMIN SUBSCRIBE (realtime) ───────────────────────────────────────────────
-function subscribeAdmin() {
-  // listen to all 3 nodes simultaneously
-  onValue(ref(db, '/'), snapshot => {
-    const data = snapshot.val() || {};
-    const st       = data.gameState || { phase:'lobby', currentQ:-1, showAnswer:false };
-    const students = data.students  || {};
-    const answers  = data.answers   || {};
-    renderAdmin(st, students, answers);
-  });
-}
+      async function adminNext() {
+        const st = await getGameState();
+        const nxt = st.currentQ + 1;
+        if (nxt >= QUESTIONS.length) {
+          await update(gameRef(), { phase: "results" });
+        } else {
+          const now = Date.now();
+          await update(gameRef(), {
+            phase: "question",
+            currentQ: nxt,
+            showAnswer: false,
+            questionStartedAt: now,
+          });
+          await remove(answersRef());
+        }
+      }
+      window.adminNext = adminNext;
 
-function renderAdmin(st, students, answers) {
-  const studentList = Object.values(students);
+      async function adminPrev() {
+        const st = await getGameState();
+        if (st.currentQ <= 0) return;
+        const now = Date.now();
+        await update(gameRef(), {
+          phase: "question",
+          currentQ: st.currentQ - 1,
+          showAnswer: false,
+          questionStartedAt: now,
+        });
+        await remove(answersRef());
+      }
+      window.adminPrev = adminPrev;
 
-  // phase badge
-  const badges = { lobby:'⏳ Lobby', question:'🟢 Soal Aktif', discussion:'💡 Pembahasan', results:'🏆 Hasil' };
-  const bClass  = { lobby:'phase-lobby', question:'phase-question', discussion:'phase-discussion', results:'phase-results' };
-  const badge   = document.getElementById('a-phase-badge');
-  badge.textContent = badges[st.phase] || '';
-  badge.className   = 'phase-badge ' + (bClass[st.phase] || '');
+      async function adminDiscuss() {
+        await update(gameRef(), { phase: "discussion", showAnswer: true });
+      }
+      window.adminDiscuss = adminDiscuss;
 
-  // views
-  document.getElementById('a-lobby-view').style.display    = st.phase==='lobby'    ? '' : 'none';
-  document.getElementById('a-question-view').style.display = (st.phase==='question'||st.phase==='discussion') ? '' : 'none';
-  document.getElementById('a-results-view').style.display  = st.phase==='results'  ? '' : 'none';
+      async function adminShowResults() {
+        await update(gameRef(), { phase: "results" });
+      }
+      window.adminShowResults = adminShowResults;
 
-  // buttons
-  const inQ = st.phase==='question'||st.phase==='discussion';
-  document.getElementById('btn-start').style.display   = st.phase==='lobby'   ? '' : 'none';
-  document.getElementById('btn-next').style.display    = inQ ? '' : 'none';
-  document.getElementById('btn-prev').style.display    = inQ && st.currentQ>0  ? '' : 'none';
-  document.getElementById('btn-discuss').style.display = st.phase==='question' ? '' : 'none';
-  document.getElementById('btn-results').style.display = inQ && st.currentQ===QUESTIONS.length-1 ? '' : 'none';
-  if (inQ) {
-    document.getElementById('btn-next').textContent = st.currentQ===QUESTIONS.length-1 ? '🏁 Selesai' : 'Berikutnya →';
-  }
+      async function adminReset() {
+        if (!confirm("Reset semua data? Skor semua mahasiswa akan hilang."))
+          return;
+        await Promise.all([
+          remove(gameRef()),
+          remove(studentsRef()),
+          remove(answersRef()),
+        ]);
+        notify("Reset berhasil.", "success");
+      }
+      window.adminReset = adminReset;
 
-  // ── LOBBY ──
-  if (st.phase === 'lobby') {
-    document.getElementById('a-lobby-count').textContent = studentList.length;
-    const ul = document.getElementById('a-lobby-list');
-    ul.innerHTML = studentList.length === 0
-      ? '<div style="color:var(--muted);font-size:.84rem;text-align:center;padding:.8rem;">Belum ada yang bergabung...</div>'
-      : studentList.map(s => `
+      // ── ADMIN SUBSCRIBE (realtime) ───────────────────────────────────────────────
+      function subscribeAdmin() {
+        // listen to all 3 nodes simultaneously
+        onValue(ref(db, "/"), (snapshot) => {
+          const data = snapshot.val() || {};
+          const st = data.gameState || {
+            phase: "lobby",
+            currentQ: -1,
+            showAnswer: false,
+          };
+          const students = data.students || {};
+          const answers = data.answers || {};
+          renderAdmin(st, students, answers);
+        });
+      }
+
+      function renderAdmin(st, students, answers) {
+        const studentList = Object.values(students);
+
+        // phase badge
+        const badges = {
+          lobby: "⏳ Lobby",
+          question: "🟢 Soal Aktif",
+          discussion: "💡 Pembahasan",
+          results: "🏆 Hasil",
+        };
+        const bClass = {
+          lobby: "phase-lobby",
+          question: "phase-question",
+          discussion: "phase-discussion",
+          results: "phase-results",
+        };
+        const badge = document.getElementById("a-phase-badge");
+        badge.textContent = badges[st.phase] || "";
+        badge.className = "phase-badge " + (bClass[st.phase] || "");
+
+        // views
+        document.getElementById("a-lobby-view").style.display =
+          st.phase === "lobby" ? "" : "none";
+        document.getElementById("a-question-view").style.display =
+          st.phase === "question" || st.phase === "discussion" ? "" : "none";
+        document.getElementById("a-results-view").style.display =
+          st.phase === "results" ? "" : "none";
+
+        // buttons
+        const inQ = st.phase === "question" || st.phase === "discussion";
+        document.getElementById("btn-start").style.display =
+          st.phase === "lobby" ? "" : "none";
+        document.getElementById("btn-next").style.display = inQ ? "" : "none";
+        document.getElementById("btn-prev").style.display =
+          inQ && st.currentQ > 0 ? "" : "none";
+        document.getElementById("btn-discuss").style.display =
+          st.phase === "question" ? "" : "none";
+        document.getElementById("btn-results").style.display =
+          inQ && st.currentQ === QUESTIONS.length - 1 ? "" : "none";
+        if (inQ) {
+          document.getElementById("btn-next").textContent =
+            st.currentQ === QUESTIONS.length - 1
+              ? "🏁 Selesai"
+              : "Berikutnya →";
+        }
+
+        // ── LOBBY ──
+        if (st.phase === "lobby") {
+          document.getElementById("a-lobby-count").textContent =
+            studentList.length;
+          const ul = document.getElementById("a-lobby-list");
+          ul.innerHTML =
+            studentList.length === 0
+              ? '<div style="color:var(--muted);font-size:.84rem;text-align:center;padding:.8rem;">Belum ada yang bergabung...</div>'
+              : studentList
+                  .map(
+                    (s) => `
           <div class="student-row">
             <div class="avatar">${esc(s.name[0].toUpperCase())}</div>
             <div class="info">
               <div class="sname">${esc(s.name)}</div>
               <div class="snim">${esc(s.nim)} · ${esc(s.prodi)}</div>
             </div>
-          </div>`).join('');
-    return;
-  }
+          </div>`,
+                  )
+                  .join("");
+          return;
+        }
 
-  // ── QUESTION / DISCUSSION ──
-  if (inQ && st.currentQ >= 0 && st.currentQ < QUESTIONS.length) {
-    const q = QUESTIONS[st.currentQ];
-    document.getElementById('a-q-cat').textContent = q.cat;
-    document.getElementById('a-q-num').textContent = `Soal ${st.currentQ+1} dari ${QUESTIONS.length}`;
-    document.getElementById('a-q-txt').textContent = q.q;
+        // ── QUESTION / DISCUSSION ──
+        if (inQ && st.currentQ >= 0 && st.currentQ < QUESTIONS.length) {
+          const q = QUESTIONS[st.currentQ];
+          document.getElementById("a-q-cat").textContent = q.cat;
+          document.getElementById("a-q-num").textContent =
+            `Soal ${st.currentQ + 1} dari ${QUESTIONS.length}`;
+          document.getElementById("a-q-txt").textContent = q.q;
 
-    document.getElementById('a-q-opts').innerHTML = ['A','B','C','D'].map(l => {
-      const correct = st.showAnswer && l === q.ans;
-      return `<div class="opt-chip ${l} ${correct?'correct-opt':''}">
+          document.getElementById("a-q-opts").innerHTML = ["A", "B", "C", "D"]
+            .map((l) => {
+              const correct = st.showAnswer && l === q.ans;
+              return `<div class="opt-chip ${l} ${correct ? "correct-opt" : ""}">
         <div class="letter">${l}</div><div>${esc(q.opts[l])}</div>
       </div>`;
-    }).join('');
+            })
+            .join("");
 
-    const expEl = document.getElementById('a-explanation');
-    if (st.showAnswer) {
-      expEl.style.display = '';
-      document.getElementById('a-expl-txt').textContent = q.expl;
-    } else {
-      expEl.style.display = 'none';
-    }
+          const expEl = document.getElementById("a-explanation");
+          if (st.showAnswer) {
+            expEl.style.display = "";
+            document.getElementById("a-expl-txt").textContent = q.expl;
+          } else {
+            expEl.style.display = "none";
+          }
 
-    // respondents
-    const total     = studentList.length;
-    const respData  = answers || {};
-    const responded = studentList.filter(s => respData[s.nim]?.[q.id]).length;
-    document.getElementById('a-resp-n').textContent   = responded;
-    document.getElementById('a-total-n').textContent  = total;
-    const pct = total > 0 ? Math.round(responded/total*100) : 0;
-    document.getElementById('a-resp-pct').textContent = pct + '%';
-    document.getElementById('a-resp-bar').style.width = pct + '%';
+          // respondents
+          const total = studentList.length;
+          const respData = answers || {};
+          const responded = studentList.filter(
+            (s) => respData[s.nim]?.[q.id],
+          ).length;
+          document.getElementById("a-resp-n").textContent = responded;
+          document.getElementById("a-total-n").textContent = total;
+          const pct = total > 0 ? Math.round((responded / total) * 100) : 0;
+          document.getElementById("a-resp-pct").textContent = pct + "%";
+          document.getElementById("a-resp-bar").style.width = pct + "%";
 
-    const respList = document.getElementById('a-resp-list');
-    const respStudents = studentList.filter(s => respData[s.nim]?.[q.id])
-      .sort((a,b) => (respData[a.nim][q.id].at||0) - (respData[b.nim][q.id].at||0));
-    respList.innerHTML = respStudents.length === 0
-      ? '<span style="color:var(--muted);font-size:.78rem;">Belum ada yang menjawab...</span>'
-      : respStudents.map(s => {
-          const ans = respData[s.nim][q.id];
-          const isCorrect = ans.choice === q.ans;
-          const cls  = st.showAnswer ? (isCorrect?'correct':'wrong') : 'answered';
-          const icon = st.showAnswer ? (isCorrect?'✓':'✗') : ans.choice;
-          return `<div class="resp-chip ${cls}">${icon} ${esc(s.name)}</div>`;
-        }).join('');
-  }
+          const respList = document.getElementById("a-resp-list");
+          const respStudents = studentList
+            .filter((s) => respData[s.nim]?.[q.id])
+            .sort(
+              (a, b) =>
+                (respData[a.nim][q.id].at || 0) -
+                (respData[b.nim][q.id].at || 0),
+            );
+          respList.innerHTML =
+            respStudents.length === 0
+              ? '<span style="color:var(--muted);font-size:.78rem;">Belum ada yang menjawab...</span>'
+              : respStudents
+                  .map((s) => {
+                    const ans = respData[s.nim][q.id];
+                    const isCorrect = ans.choice === q.ans;
+                    const cls = st.showAnswer
+                      ? isCorrect
+                        ? "correct"
+                        : "wrong"
+                      : "answered";
+                    const icon = st.showAnswer
+                      ? isCorrect
+                        ? "✓"
+                        : "✗"
+                      : ans.choice;
+                    return `<div class="resp-chip ${cls}">${icon} ${esc(s.name)}</div>`;
+                  })
+                  .join("");
+        }
 
-  // ── RESULTS ──
-  if (st.phase === 'results') {
-    const sorted = studentList.sort((a,b) => (b.score||0)-(a.score||0));
-    document.getElementById('a-results-body').innerHTML = sorted.map((s,i) => {
-      const rn     = ['rank-1','rank-2','rank-3'][i] || 'rank-n';
-      const medal  = ['🥇','🥈','🥉'][i] || '';
-      return `<tr>
-        <td><span class="rank-badge ${rn}">${i+1}</span></td>
+        // ── RESULTS ──
+        if (st.phase === "results") {
+          const sorted = studentList.sort(
+            (a, b) => (b.score || 0) - (a.score || 0),
+          );
+          document.getElementById("a-results-body").innerHTML = sorted
+            .map((s, i) => {
+              const rn = ["rank-1", "rank-2", "rank-3"][i] || "rank-n";
+              const medal = ["🥇", "🥈", "🥉"][i] || "";
+              return `<tr>
+        <td><span class="rank-badge ${rn}">${i + 1}</span></td>
         <td>${medal} ${esc(s.name)}</td>
         <td>${esc(s.nim)}</td>
         <td>${esc(s.prodi)}</td>
-        <td style="text-align:right;font-weight:700;color:var(--gold);">${(s.score||0).toLocaleString()}</td>
+        <td style="text-align:right;font-weight:700;color:var(--gold);">${(s.score || 0).toLocaleString()}</td>
       </tr>`;
-    }).join('');
-  }
-}
+            })
+            .join("");
+        }
+      }
 
-// ── STUDENT SUBSCRIBE (realtime) ─────────────────────────────────────────────
-function subscribeStudent() {
-  onValue(ref(db, '/'), snapshot => {
-    const data  = snapshot.val() || {};
-    const st    = data.gameState  || { phase:'lobby', currentQ:-1, showAnswer:false };
-    const me    = (data.students  || {})[currentNIM] || { score:0 };
-    const answers = data.answers  || {};
-    renderStudent(st, me, answers);
-  });
-}
+      // ── STUDENT SUBSCRIBE (realtime) ─────────────────────────────────────────────
+      function subscribeStudent() {
+        onValue(ref(db, "/"), (snapshot) => {
+          const data = snapshot.val() || {};
+          const st = data.gameState || {
+            phase: "lobby",
+            currentQ: -1,
+            showAnswer: false,
+          };
+          const me = (data.students || {})[currentNIM] || { score: 0 };
+          const answers = data.answers || {};
+          renderStudent(st, me, answers);
+        });
+      }
 
-function renderStudent(st, me, answers) {
-  document.getElementById('s-score').textContent = (me.score||0).toLocaleString();
+      function renderStudent(st, me, answers) {
+        document.getElementById("s-score").textContent = (
+          me.score || 0
+        ).toLocaleString();
 
-  if (st.phase === 'lobby') {
-    show('s-waiting'); hide('s-answer-section'); hide('s-answered'); hide('s-discussion');
-    document.getElementById('s-qnum').textContent = '—';
-    document.getElementById('s-waiting-sub').textContent = 'Kamu sudah terdaftar. Tunggu admin memulai soal.';
-    hasAnsweredThisQ = false; lastRenderedQ = -1;
-    return;
-  }
+        if (st.phase === "lobby") {
+          show("s-waiting");
+          hide("s-answer-section");
+          hide("s-answered");
+          hide("s-discussion");
+          document.getElementById("s-qnum").textContent = "—";
+          document.getElementById("s-waiting-sub").textContent =
+            "Kamu sudah terdaftar. Tunggu admin memulai soal.";
+          hasAnsweredThisQ = false;
+          lastRenderedQ = -1;
+          return;
+        }
 
-  if (st.phase === 'results') {
-    show('s-waiting'); hide('s-answer-section'); hide('s-answered'); hide('s-discussion');
-    document.getElementById('s-waiting').querySelector('.big-icon').textContent = '🏆';
-    document.getElementById('s-waiting').querySelector('h2').textContent = 'Kuis Selesai!';
-    document.getElementById('s-waiting-sub').textContent = 'Lihat layar proyektor untuk hasil akhir.';
-    return;
-  }
+        if (st.phase === "results") {
+          show("s-waiting");
+          hide("s-answer-section");
+          hide("s-answered");
+          hide("s-discussion");
+          document
+            .getElementById("s-waiting")
+            .querySelector(".big-icon").textContent = "🏆";
+          document.getElementById("s-waiting").querySelector("h2").textContent =
+            "Kuis Selesai!";
+          document.getElementById("s-waiting-sub").textContent =
+            "Lihat layar proyektor untuk hasil akhir.";
+          return;
+        }
 
-  const q = QUESTIONS[st.currentQ];
-  document.getElementById('s-qnum').textContent = `${st.currentQ+1}/${QUESTIONS.length}`;
+        const q = QUESTIONS[st.currentQ];
+        document.getElementById("s-qnum").textContent =
+          `${st.currentQ + 1}/${QUESTIONS.length}`;
 
-  // reset when question changes
-  if (lastRenderedQ !== st.currentQ) {
-    lastRenderedQ    = st.currentQ;
-    hasAnsweredThisQ = false;
-    questionStartedAt = st.questionStartedAt || Date.now();
-    // check if already answered in DB
-    if (answers[currentNIM]?.[q.id]) hasAnsweredThisQ = true;
-  }
+        // reset when question changes
+        if (lastRenderedQ !== st.currentQ) {
+          lastRenderedQ = st.currentQ;
+          hasAnsweredThisQ = false;
+          questionStartedAt = st.questionStartedAt || Date.now();
+          // check if already answered in DB
+          if (answers[currentNIM]?.[q.id]) hasAnsweredThisQ = true;
+        }
 
-  if (st.phase === 'discussion') {
-    hide('s-waiting'); hide('s-answer-section'); hide('s-answered'); show('s-discussion');
-    document.getElementById('s-discuss-txt').textContent = q.expl;
-    return;
-  }
+        if (st.phase === "discussion") {
+          hide("s-waiting");
+          hide("s-answer-section");
+          hide("s-answered");
+          show("s-discussion");
+          document.getElementById("s-discuss-txt").textContent = q.expl;
+          return;
+        }
 
-  // phase === 'question'
-  if (hasAnsweredThisQ || answers[currentNIM]?.[q.id]) {
-    hasAnsweredThisQ = true;
-    const myAns = answers[currentNIM]?.[q.id];
-    renderStudentAnswered(myAns?.choice || '?', q, st.showAnswer);
-  } else {
-    hide('s-waiting'); hide('s-answered'); hide('s-discussion');
-    show('s-answer-section');
-    // fill short labels
-    ['A','B','C','D'].forEach(l => {
-      const txt = q.opts[l];
-      document.getElementById('s-opt-'+l).textContent = txt.length>18 ? txt.slice(0,16)+'…' : txt;
-    });
-    document.querySelectorAll('.answer-btn').forEach(b => b.disabled = false);
-  }
-}
+        // phase === 'question'
+        if (hasAnsweredThisQ || answers[currentNIM]?.[q.id]) {
+          hasAnsweredThisQ = true;
+          const myAns = answers[currentNIM]?.[q.id];
+          renderStudentAnswered(myAns?.choice || "?", q, st.showAnswer);
+        } else {
+          hide("s-waiting");
+          hide("s-answered");
+          hide("s-discussion");
+          show("s-answer-section");
+          // fill short labels
+          ["A", "B", "C", "D"].forEach((l) => {
+            const txt = q.opts[l];
+            document.getElementById("s-opt-" + l).textContent =
+              txt.length > 18 ? txt.slice(0, 16) + "…" : txt;
+          });
+          document
+            .querySelectorAll(".answer-btn")
+            .forEach((b) => (b.disabled = false));
+        }
+      }
 
-function renderStudentAnswered(choice, q, showAnswer) {
-  hide('s-waiting'); hide('s-answer-section'); hide('s-discussion'); show('s-answered');
-  const isCorrect = choice === q.ans;
-  document.getElementById('s-ans-icon').textContent  = !showAnswer ? '⏳' : (isCorrect ? '✅' : '❌');
-  document.getElementById('s-ans-title').textContent = !showAnswer ? `Kamu memilih: ${choice}` : (isCorrect ? 'Benar! 🎉' : `Salah. Jawaban: ${q.ans}`);
-  document.getElementById('s-ans-sub').textContent   = !showAnswer ? 'Menunggu mahasiswa lain...' : (isCorrect ? 'Bagus sekali! 🔥' : 'Semangat untuk soal berikutnya!');
-}
+      function renderStudentAnswered(choice, q, showAnswer) {
+        hide("s-waiting");
+        hide("s-answer-section");
+        hide("s-discussion");
+        show("s-answered");
+        const isCorrect = choice === q.ans;
+        document.getElementById("s-ans-icon").textContent = !showAnswer
+          ? "⏳"
+          : isCorrect
+            ? "✅"
+            : "❌";
+        document.getElementById("s-ans-title").textContent = !showAnswer
+          ? `Kamu memilih: ${choice}`
+          : isCorrect
+            ? "Benar! 🎉"
+            : `Salah. Jawaban: ${q.ans}`;
+        document.getElementById("s-ans-sub").textContent = !showAnswer
+          ? "Menunggu mahasiswa lain..."
+          : isCorrect
+            ? "Bagus sekali! 🔥"
+            : "Semangat untuk soal berikutnya!";
+      }
 
-// ── SUBMIT ANSWER ────────────────────────────────────────────────────────────
-async function submitAnswer(choice) {
-  if (hasAnsweredThisQ) return;
-  const st = await getGameState();
-  if (st.phase !== 'question') return;
-  const q   = QUESTIONS[st.currentQ];
-  const now = Date.now();
-  const timeMs = now - (st.questionStartedAt || now);
+      // ── SUBMIT ANSWER ────────────────────────────────────────────────────────────
+      async function submitAnswer(choice) {
+        if (hasAnsweredThisQ) return;
+        const st = await getGameState();
+        if (st.phase !== "question") return;
+        const q = QUESTIONS[st.currentQ];
+        const now = Date.now();
+        const timeMs = now - (st.questionStartedAt || now);
 
-  hasAnsweredThisQ = true;
-  document.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
+        hasAnsweredThisQ = true;
+        document
+          .querySelectorAll(".answer-btn")
+          .forEach((b) => (b.disabled = true));
 
-  const isCorrect  = choice === q.ans;
-  const baseScore  = isCorrect ? 1000 : 0;
-  const timeBonus  = isCorrect ? Math.max(0, Math.round(500 * (1 - Math.min(timeMs,30000)/30000))) : 0;
-  const pts        = baseScore + timeBonus;
+        const isCorrect = choice === q.ans;
+        const baseScore = isCorrect ? 1000 : 0;
+        const timeBonus = isCorrect
+          ? Math.max(0, Math.round(500 * (1 - Math.min(timeMs, 30000) / 30000)))
+          : 0;
+        const pts = baseScore + timeBonus;
 
-  try {
-    // save answer
-    await set(ref(db, `answers/${currentNIM}/${q.id}`), { choice, timeMs, at: now });
-    // increment score
-    const snap = await get(ref(db, `students/${currentNIM}/score`));
-    const prevScore = snap.exists() ? (snap.val()||0) : 0;
-    await update(ref(db, `students/${currentNIM}`), { score: prevScore + pts });
-  } catch(e) {
-    notify('Gagal kirim jawaban: '+e.message,'error');
-    hasAnsweredThisQ = false;
-    document.querySelectorAll('.answer-btn').forEach(b => b.disabled = false);
-    return;
-  }
+        try {
+          // save answer
+          await set(ref(db, `answers/${currentNIM}/${q.id}`), {
+            choice,
+            timeMs,
+            at: now,
+          });
+          // increment score
+          const snap = await get(ref(db, `students/${currentNIM}/score`));
+          const prevScore = snap.exists() ? snap.val() || 0 : 0;
+          await update(ref(db, `students/${currentNIM}`), {
+            score: prevScore + pts,
+          });
+        } catch (e) {
+          notify("Gagal kirim jawaban: " + e.message, "error");
+          hasAnsweredThisQ = false;
+          document
+            .querySelectorAll(".answer-btn")
+            .forEach((b) => (b.disabled = false));
+          return;
+        }
 
-  renderStudentAnswered(choice, q, false);
-  if (isCorrect) notify(`+${pts} poin! ✅`,'success');
-}
-window.submitAnswer = submitAnswer;
+        renderStudentAnswered(choice, q, false);
+        if (isCorrect) notify(`+${pts} poin! ✅`, "success");
+      }
+      window.submitAnswer = submitAnswer;
 
-// ── UTILS ────────────────────────────────────────────────────────────────────
-function show(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.style.display = el.classList.contains('answer-grid') ? 'grid'
-                    : id==='s-answer-section' ? 'flex' : '';
-}
-function hide(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = 'none';
-}
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-function notify(msg, type='info') {
-  const el = document.createElement('div');
-  el.className = 'notif';
-  el.style.borderLeftColor = type==='error'?'var(--red)':type==='success'?'var(--green)':'var(--accent)';
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(), 3000);
-}
+      // ── UTILS ────────────────────────────────────────────────────────────────────
+      function show(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.display = el.classList.contains("answer-grid")
+          ? "grid"
+          : id === "s-answer-section"
+            ? "flex"
+            : "";
+      }
+      function hide(id) {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+      }
+      function esc(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+      function notify(msg, type = "info") {
+        const el = document.createElement("div");
+        el.className = "notif";
+        el.style.borderLeftColor =
+          type === "error"
+            ? "var(--red)"
+            : type === "success"
+              ? "var(--green)"
+              : "var(--accent)";
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+      }
 
-// ── INIT ─────────────────────────────────────────────────────────────────────
-window.addEventListener('load', () => {
-  initFirebase();
-});
-</script>
-</body>
+      // ── INIT ─────────────────────────────────────────────────────────────────────
+      window.addEventListener("load", () => {
+        initFirebase();
+      });
+    </script>
+  </body>
 </html>
