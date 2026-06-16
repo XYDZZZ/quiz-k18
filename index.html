@@ -176,48 +176,6 @@ select option { background:var(--surface); }
 </head>
 <body>
 
-  <div class="sub">Konfigurasi Firebase (sekali saja)</div>
-  <div class="card" style="max-width:480px;">
-    <p style="font-size:.84rem; color:var(--muted); line-height:1.6; margin-bottom:1rem;">
-      Isi data Firebase project kamu. Buka
-      <a href="https://console.firebase.google.com" target="_blank" style="color:var(--accent);">console.firebase.google.com</a>
-      → Project Settings → Your apps → Config.
-    </p>
-
-    <label>API Key</label>
-    <input id="cfg-apiKey" type="text" placeholder="AIzaSy..."/>
-
-    <label>Auth Domain</label>
-    <input id="cfg-authDomain" type="text" placeholder="your-project.firebaseapp.com"/>
-
-    <label>Database URL</label>
-    <input id="cfg-dbUrl" type="text" placeholder="https://your-project-default-rtdb.firebaseio.com"/>
-
-    <label>Project ID</label>
-    <input id="cfg-projectId" type="text" placeholder="your-project-id"/>
-
-    <div class="setup-row">
-      <div>
-        <label>Storage Bucket</label>
-        <input id="cfg-storageBucket" type="text" placeholder="your-project.appspot.com"/>
-      </div>
-      <div>
-        <label>Messaging Sender ID</label>
-        <input id="cfg-messagingSenderId" type="text" placeholder="123456789"/>
-      </div>
-    </div>
-
-    <label>App ID</label>
-    <input id="cfg-appId" type="text" placeholder="1:123456789:web:abc..."/>
-
-    <p class="setup-note" style="margin-top:.75rem;">
-      ⚠️ Pastikan Realtime Database sudah diaktifkan di Firebase Console, 
-      dan rules diatur ke <code style="background:var(--surface);padding:.1rem .3rem;border-radius:4px;">read/write: true</code> (untuk testing).
-    </p>
-
-    <button class="btn btn-primary" onclick="saveConfig()">💾 Simpan &amp; Lanjutkan</button>
-  </div>
-</div>
 
 <!-- ══════════════════════════════════════════════════════════════════════
   SCREEN 1 — ROLE SELECT
